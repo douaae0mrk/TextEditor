@@ -16,27 +16,43 @@ public class Selection {
     private int end;
 
     // Creates an empty selection.
-    public Selection();
+    public Selection(){
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
     // Creates a selection with the specified boundaries.
-    public Selection(int start, int end);
+    public Selection(int start, int end){
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
     // Returns the starting position.
-    public int getStart();
+    public int getStart(){
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
     // Returns the ending position.
-    public int getEnd();
+    public int getEnd(){
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
     // Sets the selection boundaries.
-    public void setSelection(int start, int end);
+    public void setSelection(int start, int end){
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
     // Clears the selection.
-    public void clear();
+    public void clear(){
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
     // Returns true if no characters are selected.
-    public boolean isEmpty();
+    public boolean isEmpty(){
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
     // Returns the number of selected characters.
-    public int getLength();
+    public int getLength(){
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
 }
