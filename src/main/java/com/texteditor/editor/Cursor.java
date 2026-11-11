@@ -22,7 +22,7 @@ public class Cursor {
     // Creates a cursor at the specified position.
     public Cursor(int position) throws IllegalArgumentException{
         // position can not be negative
-        if (position < 0) throw new IllegalArgumentException("Cursor Position must be a positive integer");
+        if (position < 0) throw new IllegalArgumentException("Invalid Cursor Position");
 
         this.position = position;
 
@@ -36,7 +36,7 @@ public class Cursor {
 
     // Sets the cursor position.
     public void setPosition(int position) throws IllegalArgumentException{
-        if (position < 0 ) throw new IllegalArgumentException("Cursor Position must be a positive integer");
+        if (position < 0 ) throw new IllegalArgumentException("Invalid Cursor Position ");
 
         this.position = position;
     }
@@ -59,7 +59,7 @@ public class Cursor {
 
     // Moves the cursor to the end of the document.
     public void moveToEnd(int documentLength) throws IllegalArgumentException{
-        if (documentLength < 0 ) throw new IllegalArgumentException("A document's length can not be negative. ");
+        if (documentLength < 0 ) throw new IllegalArgumentException("Invalid document length ");
         position = documentLength;// the position where a new char would be added
     }
 
