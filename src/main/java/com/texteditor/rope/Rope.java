@@ -5,7 +5,7 @@ public class Rope {
 
     // Creates an empty Rope.
     public Rope(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        throw new UnsupportedOperationException("Not implemented yet")  ;
     }
 
     // Creates a Rope containing the provided text.
