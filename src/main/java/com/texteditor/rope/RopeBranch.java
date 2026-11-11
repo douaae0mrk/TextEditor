@@ -14,52 +14,59 @@ public class RopeBranch extends RopeNode {
 
     // Creates a branch from two subtrees.
     public RopeBranch(RopeNode left, RopeNode right){
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.left=left;
+        this.right=right;
+        this.weight=left.length();
     }
 
     // Returns the left child.
     public RopeNode getLeft(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.left;
     }
 
     // Returns the right child.
     public RopeNode getRight(){
-        throw new UnsupportedOperationException("Not implemented yet");
+    return this.right;
     }
 
     // Returns the weight of the left subtree.
     public int getWeight(){
-        throw new UnsupportedOperationException("Not implemented yet");
+    return this.weight;
     }
 
     // Returns total characters in both subtrees.
     @Override
     public int length(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        return weight+right.length();
     }
 
     // Returns the height of the subtree.
     @Override
     public int height(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        return Math.max(left.height(),right.height())+1;
     }
 
     // Finds a character by navigating through the tree.
     @Override
     public char charAt(int index){
-        throw new UnsupportedOperationException("Not implemented yet");
+        if(left.length()>index){
+            return left.charAt(index);
+        }
+        else{
+            return right.charAt(index-this.weight);
+        }
     }
 
     // Returns the concatenated text of both subtrees.
     @Override
     public String toString(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        return left.toString()+right.toString();
     }
 
     // Returns false.
     @Override
     public boolean isLeaf(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        return false;
     }
 
 }
