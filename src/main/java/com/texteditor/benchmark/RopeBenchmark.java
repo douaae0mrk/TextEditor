@@ -47,9 +47,13 @@ public class RopeBenchmark {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    // Runs the complete benchmark suite.
+    // ... other methods ...
+
+    /*
+    // Temporarily commented out because BenchmarkResult isn't created yet
     public BenchmarkResult runBenchmark(int documentSize){
         throw new UnsupportedOperationException("Not implemented yet");
     }
+    */
 
 }
