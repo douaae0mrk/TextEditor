@@ -17,42 +17,52 @@ public class Selection {
 
     // Creates an empty selection.
     public Selection(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        start = 0;
+        end = 0;
     }
 
     // Creates a selection with the specified boundaries.
-    public Selection(int start, int end){
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Selection(int start, int end) throws IllegalArgumentException{
+
+        if(start <0 || (end < start))  throw new IllegalArgumentException("Invalid selection boundaries");
+        this.start  = start;
+        this.end = end;
     }
 
     // Returns the starting position.
     public int getStart(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        return start;
     }
 
     // Returns the ending position.
     public int getEnd(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        return end;
     }
 
     // Sets the selection boundaries.
-    public void setSelection(int start, int end){
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void setSelection(int start, int end) throws IllegalArgumentException{
+
+        if(start <0 || (end < start))  throw new IllegalArgumentException( "Invalid selection boundaries");
+        this.start  = start;
+        this.end = end;
     }
 
     // Clears the selection.
-    public void clear(){
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void clear(int cursorPosition) throws IllegalArgumentException{
+        if (cursorPosition <0 )  throw new IllegalArgumentException("Invalid Cursor Position ");
+        start = cursorPosition;
+        end = cursorPosition;
+
     }
 
     // Returns true if no characters are selected.
     public boolean isEmpty(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        return start == end ;
     }
 
     // Returns the number of selected characters.
     public int getLength(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        return end - start;
     }
 
 }

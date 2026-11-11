@@ -16,42 +16,51 @@ public class Cursor {
 
     // Creates a cursor at position 0.
     public Cursor(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.position = 0;
     }
 
     // Creates a cursor at the specified position.
-    public Cursor(int position){
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Cursor(int position) throws IllegalArgumentException{
+        // position can not be negative
+        if (position < 0) throw new IllegalArgumentException("Invalid Cursor Position");
+
+        this.position = position;
+
     }
 
     // Returns the current cursor position.
     public int getPosition(){
-        throw new UnsupportedOperationException("Not implemented yet");
+
+        return position;
     }
 
     // Sets the cursor position.
-    public void setPosition(int position){
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void setPosition(int position) throws IllegalArgumentException{
+        if (position < 0 ) throw new IllegalArgumentException("Invalid Cursor Position ");
+
+        this.position = position;
     }
 
     // Moves the cursor one position to the left.
     public void moveLeft(){
-        throw new UnsupportedOperationException("Not implemented yet");
+
+        if( position != 0) position--;
     }
 
     // Moves the cursor one position to the right.
     public void moveRight(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        position++;
     }
 
     // Moves the cursor to the beginning of the document.
     public void moveToStart(){
-        throw new UnsupportedOperationException("Not implemented yet");
+        position = 0;
     }
 
     // Moves the cursor to the end of the document.
-    public void moveToEnd(int documentLength){
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void moveToEnd(int documentLength) throws IllegalArgumentException{
+        if (documentLength < 0 ) throw new IllegalArgumentException("Invalid document length ");
+        position = documentLength;// the position where a new char would be added
     }
 
 }
