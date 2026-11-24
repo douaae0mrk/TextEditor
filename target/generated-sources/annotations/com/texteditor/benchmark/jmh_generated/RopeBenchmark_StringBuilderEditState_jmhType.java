@@ -1,0 +1,4 @@
+package com.texteditor.benchmark.jmh_generated;
+public class RopeBenchmark_StringBuilderEditState_jmhType extends RopeBenchmark_StringBuilderEditState_jmhType_B3 {
+}
+

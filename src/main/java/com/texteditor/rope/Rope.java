@@ -36,9 +36,7 @@ public class Rope {
         if (root.isLeaf()) {
             return ((RopeLeaf) root).length();
         }
-        // If it's not null and not a leaf, it is a RopeBranch.
-        // A RopeBranch typically keeps track of its left subtree's weight
-        // plus its right subtree's length.
+        // if it's not null and not a leaf so  it is a RopeBranch.
         return root.length();
     }
 
@@ -49,52 +47,112 @@ public class Rope {
 
     // Returns the character at the specified index.
     public char charAt(int index) {
+        if (index < 0 || index >= length()) {
+            throw new IndexOutOfBoundsException(
+                    "Index: " + index + ", Length: " + length()
+            );
+        }
         return root.charAt(index);
     }
 
     // Returns the text between start and end (end exclusive).
+    /* ORIGINAL TRIAL BUT NOT OPTIMIZED AFTER CHECKING BENCHMARK
     public String substring(int start, int end) {
+        if (start < 0 || end > length() || start > end) {
+            throw new IndexOutOfBoundsException();
+        }
         StringBuilder s = new StringBuilder();
         for (int i = start; i < end; i++) {
             s.append(root.charAt(i));
         }
         return s.toString();
+    }*/
+    public String substring(int start, int end) {
+
+        if (start < 0 || end > length() || start > end) {
+            throw new IndexOutOfBoundsException(
+                    "Invalid range: [" + start + ", " + end + ")"
+            );
+        }
+
+        char[] result = new char[end - start];
+
+        copySubstring(root, start, end, result, 0);
+
+        return new String(result);
     }
 
     // Inserts text at the specified index.
+
     public void insert(int index, String text) {
+        int currentLength = length();
+        if (index < 0 || index > currentLength) {
+            throw new IndexOutOfBoundsException("Index:" + index + ", Length: " + currentLength);
+        }
         if (text == null || text.isEmpty()) {
             return;
         }
-        if (this.root == null) {
-            this.root = createTree(text);
+        RopeNode insertedTree = createTree(text);
+        // Empty Rope
+        if (root == null) {
+            root = insertedTree;
             return;
         }
-        Rope[] branches = this.split(index);
-        RopeNode leftBranch = branches[0].getRoot();
-        RopeNode rightBranch = branches[1].getRoot();
-        RopeNode temp = RopeBalancer.join(leftBranch, createTree(text));
-        this.root = RopeBalancer.join(temp, rightBranch);
-
+        // insert at the beginning
+        if (index == 0) {
+            root = RopeBalancer.join(insertedTree, root);
+            return;
+        }
+        // insert at the end
+        if (index == currentLength) {
+            root = RopeBalancer.join(root, insertedTree);
+            return;
+        }
+        // insert in the middle
+        RopeNode[] parts = splitNode(root, index);
+        root = RopeBalancer.join(RopeBalancer.join(parts[0], insertedTree), parts[1]);
     }
 
+
     // Deletes the characters in [start, end).
+
     public void delete(int start, int end) {
-        if (start < 0 || end > length() || start >= end) {
+        int currentLength = length();
+        if (start < 0 || end > currentLength || start > end) {
+            throw new IndexOutOfBoundsException(
+                    "Invalid range: [" + start + ", " + end + ")"
+            );
+        }
+        if (start == end) {
             return;
         }
-        Rope[] partitionA = this.split(start);
-        Rope leftKeep = partitionA[0];
-        Rope right = partitionA[1];
-        // split the remaining right part at (end - start)
-        Rope[] partitionB = right.split(end - start);
-        Rope remove = partitionB[0];     // This is the text being deleted
-        Rope rightKeep = partitionB[1];  // This is the remaining right part we want to keep
-        // 3. Join the left and right kept parts
-        this.root = RopeBalancer.join(
-                leftKeep != null ? leftKeep.getRoot() : null,
-                rightKeep != null ? rightKeep.getRoot() : null
-        );
+        // delete everything
+        if (start == 0 && end == currentLength) {
+            root = null;
+            return;
+        }
+
+        // Delete a prefix
+        if (start == 0) {
+            RopeNode[] parts = splitNode(root, end);
+            root = parts[1];
+            return;
+        }
+
+        // Delete a suffix
+        if (end == currentLength) {
+            RopeNode[] parts = splitNode(root, start);
+            root = parts[0];
+            return;
+        }
+
+        // Delete from the middle
+        RopeNode[] firstSplit = splitNode(root, start);
+        RopeNode leftKeep = firstSplit[0];
+        RopeNode right = firstSplit[1];
+        RopeNode[] secondSplit = splitNode(right, end - start);
+        RopeNode rightKeep = secondSplit[1];
+        root = RopeBalancer.join(leftKeep, rightKeep);
     }
 
 
@@ -118,10 +176,14 @@ public class Rope {
 
     // Concatenates another Rope to the end of this Rope.
     public void concatenate(Rope other) {
-        if (other == null || other.isEmpty()) {
+        if (other == null || other.root == null) {
             return;
         }
-        this.root = RopeBalancer.join(root, other.getRoot());
+        if (this.root == null) {
+            this.root = other.root;
+            return;
+        }
+        this.root = RopeBalancer.join(this.root, other.root);
     }
 
     // Returns the complete text represented by the Rope.
@@ -130,7 +192,7 @@ public class Rope {
         if (root == null) {
             return "";
         }
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder(this.length());//improved
         appendToString(root, stringBuilder);
         return stringBuilder.toString();
     }
@@ -147,15 +209,43 @@ public class Rope {
         if (text == null || text.isEmpty()) {
             return null;
         }
-        List<RopeLeaf> leaves = new ArrayList<>();
-        for (int i = 0; i < text.length(); i += RopeLeaf.MAX_LEAF_SIZE) {
-            int end = Math.min(
-                    i + RopeLeaf.MAX_LEAF_SIZE,
-                    text.length()
-            );
+        int maxLeafSize = RopeLeaf.MAX_LEAF_SIZE;
+        int numberOfLeaves =
+                (text.length() + maxLeafSize - 1) / maxLeafSize;
+        List<RopeLeaf> leaves = new ArrayList<>(numberOfLeaves);//before we did not precise the capacity but this is more optimized(no reallocation needed )
+        for (int i = 0; i < text.length(); i += maxLeafSize) {
+            int end = Math.min(i + maxLeafSize, text.length());
+
             leaves.add(new RopeLeaf(text.substring(i, end)));
         }
         return RopeBalancer.buildBalanced(leaves);
+    }
+
+    private static int copySubstring(RopeNode node,int start,int end,char[] destination,int destinationIndex) {
+        if (node == null || start == end) {
+            return destinationIndex;
+        }
+        if (node.isLeaf()) {
+            RopeLeaf leaf = (RopeLeaf) node;
+            String text = leaf.getText();
+            text.getChars(start, end, destination, destinationIndex);
+            return destinationIndex + (end - start);
+        }
+        RopeBranch branch = (RopeBranch) node;
+        int leftLength = branch.getLeft().length();
+        if (start < leftLength) {
+            int leftEnd = Math.min(end, leftLength);
+            destinationIndex = copySubstring(branch.getLeft(), start,leftEnd,destination,destinationIndex);
+        }
+        if (end > leftLength) {
+
+            int rightStart = Math.max(0, start - leftLength);
+            int rightEnd = end - leftLength;
+
+            destinationIndex = copySubstring(branch.getRight(),rightStart,rightEnd,destination,destinationIndex
+            );
+        }
+        return destinationIndex;
     }
 
     private static RopeNode[] splitNode(RopeNode node, int index) {

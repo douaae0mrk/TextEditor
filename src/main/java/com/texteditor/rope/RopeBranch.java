@@ -2,21 +2,21 @@
 package com.texteditor.rope;
 
 public class RopeBranch extends RopeNode {
-
-    // Left subtree.
     private RopeNode left;
-
-    // Right subtree.
     private RopeNode right;
 
     // Number of characters in the left subtree.
     private int weight;
+    private int height;
+    private int length;
 
     // Creates a branch from two subtrees.
     public RopeBranch(RopeNode left, RopeNode right){
         this.left=left;
         this.right=right;
         this.weight=left.length();
+        this.height= Math.max(left.height(),right.height())+1;
+        this.length=  weight+right.length();
     }
 
     // Returns the left child.
@@ -37,13 +37,13 @@ public class RopeBranch extends RopeNode {
     // Returns total characters in both subtrees.
     @Override
     public int length(){
-        return weight+right.length();
+        return this.length;
     }
 
     // Returns the height of the subtree.
     @Override
-    public int height(){
-        return Math.max(left.height(),right.height())+1;
+    public int height() {
+        return height;
     }
 
     // Finds a character by navigating through the tree.
